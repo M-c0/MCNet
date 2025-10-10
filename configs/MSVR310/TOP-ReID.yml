@@ -1,0 +1,53 @@
+MODEL:
+  PRETRAIN_CHOICE: 'imagenet'
+  PRETRAIN_PATH_T: '../models/jx_vit_base_p16_224-80ecf9dd.pth'
+  TRANSFORMER_TYPE: 'vit_base_patch16_224'
+  STRIDE_SIZE: [ 16, 16 ]
+  SIE_CAMERA: True
+  RE: 0
+  RE_LAYER: 1
+  DIRECT: 0 # We find that for vehicle reid, indirect is better than direct
+  BASE: 0 # baseline !!!!!!!!!!!!
+#  DEVICE_ID: 1
+INPUT:
+  SIZE_TRAIN: [ 128, 256 ] # For VehicleID, you can also use [128,256], we simply use the same setting as Person-ReID
+  SIZE_TEST: [ 128, 256 ]
+  PROB: 0.5 # random horizontal flip
+  RE_PROB: 0.5 # random erasing
+  PADDING: 10
+DATALOADER:
+  SAMPLER: 'softmax_triplet'
+  NUM_INSTANCE: 4 # You can adjust it to 8 to save memory while the batch_size need to be 64 to ensure the number of ID
+
+DATASETS:
+  NAMES: ('MSVR310')
+  ROOT_DIR: '../datasets/msvr310'
+
+SOLVER:
+  MAX_EPOCHS: 1000 # Here we follow the setting CCNet
+  OPTIMIZER_NAME: "SGD"  # !!!!!!!!!!!!!!!!!!!!!!!!  AdamW  SGD
+  BASE_LR: 0.001   # Here we use a smaller learning rate  sgd 0.001   adamw 0.0001
+  WARMUP_ITERS: 100  # 10   100  50
+  IMS_PER_BATCH: 32 # You can adjust it to 64
+  STEPS: [40, 80]
+  # Settings of weight decay
+  WEIGHT_DECAY: 0.0001  # 0.0001
+  WEIGHT_DECAY_BIAS: 0.0001  # 0.0001
+
+  CHECKPOINT_PERIOD: 400
+
+# log/MSVR310/baseline_shared_ViT/TOPReIDbest.pth  Baseline
+# log/MSVR310/PAT_R_0.25/TOPReIDbest.pth  PAT
+# log/MSVR310/2025-6-4-14_57/TOPReIDbest.pth  PAT+Common_l_g
+# log/MSVR310/2025-6-7-10_47/TOPReIDbest.pth  PAT+Common_l_g+ME
+
+TEST:
+  RE_RANKING: 'no'
+  WEIGHT: './log/MSVR310/baseline_shared_ViT/TOPReIDbest.pth'
+  NECK_FEAT: 'before'  # 'before'  'after'
+  FEAT_NORM: 'yes'
+  MISS: 'nothing'
+  IMS_PER_BATCH: 128
+
+OUTPUT_DIR: './log/MSVR310'
+

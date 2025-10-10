@@ -1,0 +1,42 @@
+MODEL:
+  PRETRAIN_CHOICE: 'imagenet'
+  PRETRAIN_PATH_T: '../models/jx_vit_base_p16_224-80ecf9dd.pth'
+  TRANSFORMER_TYPE: 'vit_base_patch16_224'
+  STRIDE_SIZE: [ 16, 16 ]
+  SIE_CAMERA: True
+  RE: 0
+  RE_LAYER: 1
+  DIRECT: 0 # We find that for vehicle reid, indirect is better than direct
+  BASE: 0 # baseline !!!!!!!!!!!!
+INPUT:
+  SIZE_TRAIN: [ 128, 256 ] # For VehicleID, you can also use [128,256], we simply use the same setting as Person-ReID
+  SIZE_TEST: [ 128, 256 ]
+  PROB: 0.5 # random horizontal flip
+  RE_PROB: 0.5 # random erasing
+  PADDING: 10
+DATALOADER:
+  SAMPLER: 'softmax_triplet'
+  NUM_INSTANCE: 8
+
+DATASETS:
+  NAMES: ('RGBNT100')
+  ROOT_DIR: '../datasets/RGBNT100'
+
+SOLVER:
+  MAX_EPOCHS: 120 # Here we follow the setting CCNet
+  OPTIMIZER_NAME: "SGD"  # !!!!!!!!!!!!!!!!!!!!!!!!  AdamW  SGD
+  BASE_LR: 0.001
+  WARMUP_ITERS: 10
+  IMS_PER_BATCH: 24 # You can adjust it to 64
+  STEPS: [15, 20]
+  EVAL_PERIOD: 1
+
+TEST:
+  RE_RANKING: 'no'
+  WEIGHT: ''
+  NECK_FEAT: 'before'
+  FEAT_NORM: 'yes'
+  MISS: "nothing"
+
+OUTPUT_DIR: './log/RGBNT100'
+

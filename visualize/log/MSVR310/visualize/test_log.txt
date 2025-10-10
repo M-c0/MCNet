@@ -1,0 +1,138 @@
+2025-07-03 11:53:21,339 gradcam INFO: Namespace(config_file='ReID_visualize.yml', opts=[])
+2025-07-03 11:53:21,339 gradcam INFO: Loaded configuration file ReID_visualize.yml
+2025-07-03 11:53:21,339 gradcam INFO: 
+MODEL:
+  PRETRAIN_CHOICE: 'imagenet'
+  PRETRAIN_PATH_T: '../../models/jx_vit_base_p16_224-80ecf9dd.pth'
+  TRANSFORMER_TYPE: 'vit_base_patch16_224'
+  STRIDE_SIZE: [ 16, 16 ]
+  SIE_CAMERA: True
+  RE: 0
+  RE_LAYER: 1
+  DIRECT: 0 # We find that for vehicle reid, indirect is better than direct
+  BASE: 0 # baseline !!!!!!!!!!!!
+#  DEVICE_ID: 1
+INPUT:
+  SIZE_TRAIN: [ 128, 256 ] # For VehicleID, you can also use [128,256], we simply use the same setting as Person-ReID
+  SIZE_TEST: [ 128, 256 ]
+  PROB: 0.5 # random horizontal flip
+  RE_PROB: 0.5 # random erasing
+  PADDING: 10
+DATALOADER:
+  SAMPLER: 'softmax_triplet'
+  NUM_INSTANCE: 4 # You can adjust it to 8 to save memory while the batch_size need to be 64 to ensure the number of ID
+
+DATASETS:
+  NAMES: ('MSVR310')  # RGBNT100
+  ROOT_DIR: '../../datasets/MSVR310'   # MSVR310
+
+SOLVER:
+  MAX_EPOCHS: 1000 # Here we follow the setting CCNet
+  OPTIMIZER_NAME: "SGD"  # !!!!!!!!!!!!!!!!!!!!!!!!  AdamW  SGD
+  BASE_LR: 0.001   # Here we use a smaller learning rate  sgd 0.001   adamw 0.0001
+  WARMUP_ITERS: 100  # 10   100  50
+  IMS_PER_BATCH: 32 # You can adjust it to 64
+  STEPS: [40, 80]
+  # Settings of weight decay
+  WEIGHT_DECAY: 0.0001  # 0.0001
+  WEIGHT_DECAY_BIAS: 0.0001  # 0.0001
+
+  CHECKPOINT_PERIOD: 400
+
+# log/MSVR310/baseline_shared_ViT/TOPReIDbest.pth  Baseline
+# log/MSVR310/PAT_R_0.25/TOPReIDbest.pth  PAT
+# log/MSVR310/2025-6-4-14_57/TOPReIDbest.pth  PAT+Common_l_g
+# log/MSVR310/2025-6-7-10_47/TOPReIDbest.pth  PAT+Common_l_g+ME
+
+TEST:
+  RE_RANKING: 'no'
+  WEIGHT: '../log/MSVR310/baseline_shared_ViT/TOPReIDbest.pth'  # log/RGBNT100/2025-6-8-11_15/TOPReIDbest.pth    MSVR310/2025-6-7-10_47/TOPReIDbest.pth
+  NECK_FEAT: 'before'  # 'before'  'after'
+  FEAT_NORM: 'yes'
+  MISS: 'nothing'
+  IMS_PER_BATCH: 32
+OUTPUT_DIR: './log/MSVR310'
+
+
+2025-07-03 11:53:21,340 gradcam INFO: Running with config:
+DATALOADER:
+  NUM_INSTANCE: 4
+  NUM_WORKERS: 1
+  SAMPLER: softmax_triplet
+DATASETS:
+  NAMES: MSVR310
+  ROOT_DIR: ../../datasets/MSVR310
+INPUT:
+  PADDING: 10
+  PIXEL_MEAN: [0.5, 0.5, 0.5]
+  PIXEL_STD: [0.5, 0.5, 0.5]
+  PROB: 0.5
+  RE_PROB: 0.5
+  SIZE_TEST: [128, 256]
+  SIZE_TRAIN: [128, 256]
+MODEL:
+  ATT_DROP_RATE: 0.0
+  BASE: 0
+  DEVICE: cuda
+  DEVICE_ID: 0
+  DIRECT: 0
+  DIST_TRAIN: False
+  DROP_OUT: 0.0
+  DROP_PATH: 0.1
+  ID_LOSS_TYPE: softmax
+  ID_LOSS_WEIGHT: 1.0
+  IF_LABELSMOOTH: on
+  IF_WITH_CENTER: no
+  LAYER: -1
+  METRIC_LOSS_TYPE: triplet
+  NAME: TOPReID
+  NECK: bnneck
+  NO_MARGIN: True
+  PRETRAIN_CHOICE: imagenet
+  PRETRAIN_PATH_T: ../../models/jx_vit_base_p16_224-80ecf9dd.pth
+  RE: 0
+  RE_LAYER: 1
+  SIE_CAMERA: True
+  SIE_COE: 3.0
+  SIE_VIEW: False
+  STRIDE_SIZE: [16, 16]
+  TRANSFORMER_TYPE: vit_base_patch16_224
+  TRIPLET_LOSS_WEIGHT: 1.0
+OUTPUT_DIR: ./log/MSVR310
+SOLVER:
+  BASE_LR: 0.001
+  BIAS_LR_FACTOR: 1
+  CENTER_LOSS_WEIGHT: 0.0005
+  CENTER_LR: 0.5
+  CHECKPOINT_PERIOD: 400
+  CLUSTER_MARGIN: 0.3
+  COSINE_MARGIN: 0.5
+  COSINE_SCALE: 30
+  EVAL_PERIOD: 5
+  GAMMA: 0.1
+  IMS_PER_BATCH: 32
+  LARGE_FC_LR: False
+  LOG_PERIOD: 20
+  MARGIN: 0.3
+  MAX_EPOCHS: 1000
+  MOMENTUM: 0.9
+  OPTIMIZER_NAME: SGD
+  RANGE_ALPHA: 0
+  RANGE_BETA: 1
+  RANGE_K: 2
+  RANGE_LOSS_WEIGHT: 1
+  RANGE_MARGIN: 0.3
+  SEED: 1111
+  STEPS: (40, 80)
+  WARMUP_FACTOR: 0.01
+  WARMUP_ITERS: 100
+  WARMUP_METHOD: linear
+  WEIGHT_DECAY: 0.0001
+  WEIGHT_DECAY_BIAS: 0.0001
+TEST:
+  FEAT_NORM: yes
+  IMS_PER_BATCH: 32
+  MISS: nothing
+  NECK_FEAT: before
+  RE_RANKING: no
+  WEIGHT: ../log/MSVR310/baseline_shared_ViT/TOPReIDbest.pth
