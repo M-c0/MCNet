@@ -195,9 +195,9 @@ class mm_ReID(nn.Module):
 
             # print(mask[0])
             # print(mask_inter[0])
-            RGB_feat = self.rgb_block(RGB_feat)
-            NI_feat = self.nir_block(NI_feat)
-            TI_feat = self.tir_block(TI_feat)
+            RGB_feat = self.rgb_block(RGB_feats)
+            NI_feat = self.nir_block(NIR_feats)
+            TI_feat = self.tir_block(TIR_feats)
 
             # common, common_socre, common_contras_glb, common_feat = self.common(RGB_feat, NI_feat, TI_feat)
             common, common_socre, common_contras_glb, common_loc, common_feat = self.common(RGB_feat, NI_feat, TI_feat, mask_inter)

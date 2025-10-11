@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="TOPReID Training")
     parser.add_argument(
-        "--config_file", default="./configs/RGBNT100/TOP-ReID.yml", help="path to config file", type=str)  # RGBNT100  MSVR310  WMVEID863
+        "--config_file", default="./configs/MSVR310/TOP-ReID.yml", help="path to config file", type=str)  # RGBNT100  MSVR310  WMVEID863
     parser.add_argument("--fea_cft", default=0, help="Feature choose to be tested", type=int)
     parser.add_argument("opts", help="Modify config options using the command-line", default=None,
                         nargs=argparse.REMAINDER)

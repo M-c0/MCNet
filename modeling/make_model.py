@@ -2,8 +2,6 @@ import torch
 import torch.nn as nn
 from modeling.backbones.vit_pytorch import vit_base_patch16_224, vit_small_patch16_224, \
     deit_small_patch16_224
-from modeling.fusion_part.TPM import TPM
-from modeling.fusion_part.CRM import CRM
 from modeling.backbones.t2t import t2t_vit_t_14, t2t_vit_t_24
 from modeling.vit_gan import vit_base_patch16_224_mm
 
